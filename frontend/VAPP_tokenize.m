@@ -576,7 +576,8 @@ function new_macro_definitions = add_macro(macro, macro_definitions)
 
     % check to see if macro already exists; if so, raise an exception
     if macro_exists(macro.name, macro_definitions)
-        error(['Multiple definitions for macro "', macro.name, '"']);
+%         error(['Multiple definitions for macro "', macro.name, '"']);
+        VAPP_error('vapp-error',['Multiple definitions for macro "', macro.name, '"']);
     end
 
     % macro does not exist

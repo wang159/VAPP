@@ -72,7 +72,7 @@ function AST = VAPP_parse(toks, str_utils)
 
         else
             AST = VAPP_AST_Node.empty;
-            VAPP_error('Unexpected token', tok);
+            VAPP_error('vapp-error','Unexpected token', tok);
             return;
         end
 
@@ -552,7 +552,7 @@ function out = convert_const_dtype(from_type, to_type, key)
     if ~success
         [oof, err_type] = ...
             multi_map_lookup(idxs_err_msgs_multi_map, from_type, 1, 3);
-        VAPP_error(['Not a valid constant ', err_type]);
+        VAPP_error('vapp-error',['Not a valid constant ', err_type]);
         out = -1;
         return;
     end
@@ -564,12 +564,12 @@ function success = assert_keyword(tok, kw)
     if nargin == 1
         if ~is_keyword(tok)
             success = -1;
-            VAPP_error('Expected a keyword token, but did not find it', tok);
+            VAPP_error('vapp-error','Expected a keyword token, but did not find it', tok);
         end
     else
         if ~is_keyword(tok, kw)
             success = -1;
-            VAPP_error(sprintf('Expected keyword "%s", but did not find it', kw), tok);
+            VAPP_error('vapp-error',sprintf('Expected keyword "%s", but did not find it', kw), tok);
         end
     end
 end
@@ -579,7 +579,7 @@ function success = assert_one_of_the_keywords(tok, kw_arr, str_utils)
     if ~is_one_of_the_keywords(tok, kw_arr, str_utils)
         s = str_utils.str_arr_to_str(kw_arr);
         success = -1;
-        VAPP_error(['Expected one of the keywords ', s, ', but did not find it'], tok);
+        VAPP_error('vapp-error',['Expected one of the keywords ', s, ', but did not find it'], tok);
     end
 end
 
@@ -588,12 +588,12 @@ function success = assert_symbol(tok, sym)
     if nargin == 1
         if ~is_symbol(tok)
             success = -1;
-            VAPP_error('Expected a punctuation symbol token, but did not find it', tok);
+            VAPP_error('vapp-error','Expected a punctuation symbol token, but did not find it', tok);
         end
     else
         if ~is_symbol(tok, sym)
             success = -1;
-            VAPP_error(sprintf('Expected symbol "%s", but did not find it', sym), tok);
+            VAPP_error('vapp-error',sprintf('Expected symbol "%s", but did not find it', sym), tok);
         end
     end
 end
@@ -603,7 +603,7 @@ function success = assert_one_of_the_symbols(tok, sym_arr, str_utils)
     if ~is_one_of_the_symbols(tok, sym_arr, str_utils)
         success = -1;
         s = str_utils.str_arr_to_str(sym_arr);
-        VAPP_error(['Expected one of the symbols ', s, ', but did not find it'], tok);
+        VAPP_error('vapp-error',['Expected one of the symbols ', s, ', but did not find it'], tok);
     end
 end
 
@@ -618,7 +618,7 @@ function success = assert_one_of_the_symbols_or_keywords(tok, ...
         s_sym = str_utils.str_arr_to_str(sym_arr);
         s_kw = str_utils.str_arr_to_str(kw_arr);
 
-        VAPP_error(['Expected one of the symbols ', s_sym, ...
+        VAPP_error('vapp-error',['Expected one of the symbols ', s_sym, ...
                ' or one of the keywords ', s_kw, ', but did not find it'], tok);
 
     end
@@ -640,12 +640,12 @@ function success = assert_identifier(tok, id_name)
     if nargin == 1
         if ~is_identifier(tok)
             success = -1;
-            VAPP_error('Expected an identifier token, but did not find it', tok);
+            VAPP_error('vapp-error','Expected an identifier token, but did not find it', tok);
         end
     else
         if ~is_identifier(tok, id_name)
             success = -1;
-            VAPP_error(sprintf('Expected identifier "%s", but did not find it', ...
+            VAPP_error('vapp-error',sprintf('Expected identifier "%s", but did not find it', ...
                           id_name), tok);
         end
     end
@@ -656,7 +656,7 @@ function success = assert_one_of_the_identifiers(tok, id_arr, str_utils)
     if ~is_one_of_the_identifiers(tok, id_arr, str_utils)
         s = str_utils.str_arr_to_str(id_arr);
         success = -1;
-        VAPP_error(['Expected one of the identifiers ', s, ', but did not find it'], tok);
+        VAPP_error('vapp-error',['Expected one of the identifiers ', s, ', but did not find it'], tok);
     end
 end
 
@@ -664,7 +664,7 @@ function success = assert_simulator_directive(tok)
     success = 0;
     if ~is_simulator_directive(tok)
         success = -1;
-        VAPP_error('Expected a simulator directive token, but did not find it', tok);
+        VAPP_error('vapp-error','Expected a simulator directive token, but did not find it', tok);
     end
 end
 
@@ -672,7 +672,7 @@ function success = assert_string(tok)
     success = 0;
     if ~is_string(tok)
         success = -1;
-        VAPP_error('Expected a string token, but did not find it', tok);
+        VAPP_error('vapp-error','Expected a string token, but did not find it', tok);
     end
 end
 
@@ -681,7 +681,7 @@ function success = assert_numeric_constant(tok)
     success = 0;
     if ~is_numeric_constant(tok)
         success = -1;
-        VAPP_error('Expected a numeric constant token, but did not find it', tok);
+        VAPP_error('vapp-error','Expected a numeric constant token, but did not find it', tok);
     end
 end
 
@@ -702,7 +702,7 @@ function new_next_pos = skip_to_keyword(kw, toks, next_pos)
     end
 
     new_next_pos = -1;
-    VAPP_error(['Keyword token "', kw, '" not found'], tok);
+    VAPP_error('vapp-error',['Keyword token "', kw, '" not found'], tok);
 
 end
 
@@ -725,9 +725,9 @@ function new_next_pos = skip_to_symbol(sym, toks, next_pos)
 
     new_next_pos = -1;
     if isempty(tok) == false
-        VAPP_error(['Symbol token "', sym, '" not found'], tok);
+        VAPP_error('vapp-error',['Symbol token "', sym, '" not found'], tok);
     else
-        VAPP_error(['Symbol token "', sym, '" not found']);
+        VAPP_error('vapp-error',['Symbol token "', sym, '" not found']);
     end
 
 end
@@ -751,7 +751,7 @@ function new_next_pos = ...
 
     s = str_utils.str_arr_to_str(sym_arr);
     new_next_pos = -1;
-    VAPP_error(['None of the symbols ', s, ' found'], tok);
+    VAPP_error('vapp-error',['None of the symbols ', s, ' found'], tok);
 
 end
 
@@ -779,7 +779,7 @@ function new_next_pos = skip_to_one_of_the_symbols_or_keywords(sym_arr, ...
     s_sym = str_utils.str_arr_to_str(sym_arr);
     s_kw = str_utils.str_arr_to_str(kw_arr);
     new_next_pos = -1;
-    VAPP_error(['None of the symbols ', s_sym, ' or keywords ', s_kw, ' found'], tok);
+    VAPP_error('vapp-error',['None of the symbols ', s_sym, ' or keywords ', s_kw, ' found'], tok);
 
 end
 
@@ -814,7 +814,7 @@ function new_next_pos = parse_nature(toks, next_pos, nature_map, access_map)
             tok = toks{next_pos};
         catch
             new_next_pos = -1;
-            VAPP_error('Expected keyword "endnature", but did not find it',...
+            VAPP_error('vapp-error','Expected keyword "endnature", but did not find it',...
                                                            toks{next_pos-1});
             return;
         end
@@ -912,7 +912,7 @@ function new_next_pos = parse_discipline(toks, next_pos, nature_map,...
             tok = toks{next_pos};
         catch
             new_next_pos = -1;
-            VAPP_error('Expected keyword "enddiscipline", but did not find it',...
+            VAPP_error('vapp-error','Expected keyword "enddiscipline", but did not find it',...
                                                            toks{next_pos-1});
             return;
         end
@@ -931,7 +931,7 @@ function new_next_pos = parse_discipline(toks, next_pos, nature_map,...
                 catch
                     success = -1;
                     next_pos = -1;
-                    VAPP_error(['Tried to access the potential "', ...
+                    VAPP_error('vapp-error',['Tried to access the potential "', ...
                                 nature_name, '" but could not find it. ',...
                                 ' This nature has to be defined prior to',...
                                 ' this discipline definition!'], tok);
@@ -952,7 +952,7 @@ function new_next_pos = parse_discipline(toks, next_pos, nature_map,...
                 catch
                     success = -1;
                     next_pos = -1;
-                    VAPP_error(['Tried to access the flow "', ...
+                    VAPP_error('vapp-error',['Tried to access the flow "', ...
                                 nature_name, '" but could not find it. ',...
                                 ' This nature has to be defined prior to',...
                                 ' this discipline definition!'], tok);
@@ -1011,7 +1011,7 @@ function [tok, new_next_pos] = get_next_token(toks, next_pos, expected_token_typ
     catch
         tok = [];
         new_next_pos = -1;
-        VAPP_error(['Expected another token ', expected_token_paren ,...
+        VAPP_error('vapp-error',['Expected another token ', expected_token_paren ,...
                                      'but did not find it!'], toks{next_pos-1});
         return;
     end
@@ -1087,7 +1087,7 @@ function [tok, new_next_pos] = get_lhs_token(toks, next_pos) % get_lhs_token get
 
     if new_next_pos == -1
         tok = [];
-        VAPP_error('Expected a LHS expression, but did not find it',...
+        VAPP_error('vapp-error','Expected a LHS expression, but did not find it',...
                                                            toks{next_pos});
         return;
     end
@@ -1161,7 +1161,7 @@ function [AST, new_next_pos] = ...
         catch
             AST = VAPP_AST_Node.empty;
             new_next_pos = -1;
-            VAPP_error('Expected keyword "endmodule", but did not find it',...
+            VAPP_error('vapp-error','Expected keyword "endmodule", but did not find it',...
                                                            toks{next_pos-1});
             return;
         end
@@ -2159,7 +2159,7 @@ function [ASTs, new_next_pos] = ...
         % empty list
         ASTs = {};
         new_next_pos = -1;
-        VAPP_error('List of ports/identifiers cannot be empty', tok);
+        VAPP_error('vapp-error','List of ports/identifiers cannot be empty', tok);
         return;
     end
 
@@ -2188,7 +2188,7 @@ function [ASTs, new_next_pos] = ...
 
     if isempty(ASTs)
         new_next_pos = -1;
-        VAPP_error('List of ports/identifiers cannot be empty', tok);
+        VAPP_error('vapp-error','List of ports/identifiers cannot be empty', tok);
         return;
     end
 
@@ -3034,7 +3034,7 @@ function [AST, new_next_pos] = ...
     else
         new_next_pos = -1;
         AST = VAPP_AST_Node.empty;
-        VAPP_error('Expected one of {"(", "[", "''"}, but did not find it', tok);
+        VAPP_error('vapp-error','Expected one of {"(", "[", "''"}, but did not find it', tok);
         return;
     end
 
@@ -3092,7 +3092,7 @@ function [AST, new_next_pos] = ...
     else
         new_next_pos = -1;
         AST = VAPP_AST_Node.empty;
-        VAPP_error('Expected an "(" or "[", but did not find it', tok);
+        VAPP_error('vapp-error','Expected an "(" or "[", but did not find it', tok);
         return;
     end
     next_pos = next_pos + 1;
@@ -3137,7 +3137,7 @@ function [AST, new_next_pos] = ...
     else
         AST = VAPP_AST_Node.empty;
         new_next_pos = -1;
-        VAPP_error('Expected an ")" or "]", but did not find it', tok);
+        VAPP_error('vapp-error','Expected an ")" or "]", but did not find it', tok);
         return;
     end
     next_pos = next_pos + 1;
@@ -3542,7 +3542,7 @@ function [AST, new_next_pos] = parse_core_statement(toks, ...
             if ~contrib_allowed
                 new_next_pos = -1;
                 AST = VAPP_AST_Node.empty;
-                VAPP_error('Contribution statements not allowed here', tok);
+                VAPP_error('vapp-error','Contribution statements not allowed here', tok);
                 return;
             end
             [AST, new_next_pos] = ...
@@ -3602,7 +3602,7 @@ function [AST, new_next_pos] = parse_core_statement(toks, ...
     else
         new_next_pos = -1;
         AST = VAPP_AST_Node.empty;
-        VAPP_error('Expected a "core" statement, but did not find it', tok);
+        VAPP_error('vapp-error','Expected a "core" statement, but did not find it', tok);
         return;
     end
 
@@ -4005,7 +4005,7 @@ function [AST, new_next_pos] = parse_case_statement(toks, ...
     if isempty(case_items_ASTs)
         new_next_pos = -1;
         AST = VAPP_AST_Node.empty;
-        VAPP_error('Case statement has to contain at least one case item', tok);
+        VAPP_error('vapp-error','Case statement has to contain at least one case item', tok);
         return;
     end
 
@@ -4755,7 +4755,7 @@ function [AST, success] = parse_expression(toks, access_arr, ...
         else
             AST = VAPP_AST_Node.empty;
             success = -1;
-            VAPP_error('Unrecognized token while parsing expression', tok);
+            VAPP_error('vapp-error','Unrecognized token while parsing expression', tok);
             return;
         end
 
@@ -4784,7 +4784,7 @@ function [AST, success] = parse_expression(toks, access_arr, ...
     if length(expr_stack) ~= 1
         AST = VAPP_AST_Node.empty;
         success = -2;
-        VAPP_error('Expression stack does not contain exactly one item');
+        VAPP_error('vapp-error','Expression stack does not contain exactly one item');
         return;
     end
 
@@ -4825,7 +4825,7 @@ function [AST, terminator_pos] = ...
     % if error from parse_expression
     if success ~= 0
         if success == -2
-            VAPP_error('Expected another expression before token but did not find it', ...
+            VAPP_error('vapp-error','Expected another expression before token but did not find it', ...
                                                          toks{terminator_pos});
         end
         terminator_pos = -1;
@@ -4903,7 +4903,7 @@ function new_next_pos = ...
                 [top, stack] = stack_pop(stack);
                 if top ~= '('
                     new_next_pos = -1;
-                    VAPP_error('Mismatched parentheses', tok);
+                    VAPP_error('vapp-error','Mismatched parentheses', tok);
                     return;
                 end
             end
@@ -4916,7 +4916,7 @@ function new_next_pos = ...
                 [top, stack] = stack_pop(stack);
                 if top ~= '?'
                     new_next_pos = -1;
-                    VAPP_error('Mismatched conditional (?:) operator', tok);
+                    VAPP_error('vapp-error','Mismatched conditional (?:) operator', tok);
                     return;
                 end
             end
@@ -4929,7 +4929,7 @@ function new_next_pos = ...
                 top = stack_peek(stack);
                 if top ~= '('
                     new_next_pos = -1;
-                    VAPP_error('Improper use of comma in expression', tok);
+                    VAPP_error('vapp-error','Improper use of comma in expression', tok);
                     return;
                 end
             end
@@ -4942,7 +4942,7 @@ function new_next_pos = ...
                 break;
             else
                 new_next_pos = -1;
-                VAPP_error('Syntax error in expression', tok);
+                VAPP_error('vapp-error','Syntax error in expression', tok);
                 return;
             end
 
@@ -5071,7 +5071,7 @@ function [AST, new_next_pos] = parse_function_call(toks, next_pos,...
     % the name of the function
     tok = toks{next_pos};
     if ~is_keyword(tok) && ~is_identifier(tok)
-        VAPP_error('Expected a keyword/identifier, but did not find it', tok);
+        VAPP_error('vapp-error','Expected a keyword/identifier, but did not find it', tok);
         AST = VAPP_AST_Node.empty;
         new_next_pos = -1;
         return;
@@ -5455,7 +5455,7 @@ function [prec, assoc] = get_precedence_and_associativity(op, str_utils)
 
     prec = -1;
     assoc = -1;
-    VAPP_error(sprintf('Operator %s not found in precedence table', op));
+    VAPP_error('vapp-error',sprintf('Operator %s not found in precedence table', op));
 
 end
 

@@ -13,7 +13,7 @@ classdef MsBranch < handle
 % Author: A. Gokcen Mahmutoglu
 % Last modified: Tue Jan 31, 2017  11:41AM
 %==============================================================================
-    properties (Access = private)
+    properties (Access = public)
         node1 = MsNode.empty;
         node2 = MsNode.empty;
         label = ''; % this will be the concatenation of the two node names.
@@ -27,6 +27,10 @@ classdef MsBranch < handle
         collapsed = false;
         toBeCollapsed = false;
         collapsedWarningDisplayed = false;
+        
+        % attributes
+        isAttrReference = false;
+        isAttrOuter = false;
     end
 
     methods
@@ -56,6 +60,10 @@ classdef MsBranch < handle
             obj.flowObj = MsFlow(obj);
             obj.potentialObj = MsPotential(obj);
             obj.aliasMap = containers.Map();
+            
+            % set attributes
+            obj.isAttrReference = obj.isReference();
+            obj.isAttrOuter = obj.isOuter();
         end
 
         function [nodeObj1, nodeObj2] = getNodes(thisBranch)

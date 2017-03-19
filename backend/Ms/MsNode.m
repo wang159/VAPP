@@ -7,7 +7,8 @@ classdef MsNode < handle
 % Author: A. Gokcen Mahmutoglu                                
 % Last modified: Thu Aug 25, 2016  10:49AM
 %==============================================================================
-    properties (Access = private)
+    properties (Access = public)
+       id = '';
        label = '';
        terminal = false;
        reference = false;
@@ -22,6 +23,18 @@ classdef MsNode < handle
 
         function obj = MsNode(label)
             obj.label = label;
+            
+            while 1
+                
+                candidate_id = randi(100000);
+                candidate_id_inv = 1/candidate_id;
+                
+                if candidate_id_inv*candidate_id == 1
+                    obj.id = candidate_id;
+                    break;
+                end
+
+            end
         end
 
         function label = getLabel(thisNode)

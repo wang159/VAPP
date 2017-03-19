@@ -6,7 +6,7 @@ classdef MsPotentialFlow < MsDifferentiable & matlab.mixin.Heterogeneous
 % Author: A. Gokcen Mahmutoglu                                
 % Last modified: Tue Dec 13, 2016  11:22AM
 %==============================================================================
-    properties (Access = protected)
+    properties (Access = public)
         node1 = MsNode.empty;
         node2 = MsNode.empty;
         branch = MsBranch.empty;

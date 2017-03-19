@@ -355,7 +355,13 @@ classdef MsNetwork < handle
         % 4. branches with potential contributions (inductive-resistive branches)
         % 5. branches with flow sources
 
-            branchVec = thisNetwork.getOrderedBranchVec();
+            branchVec = thisNetwork.getOrderedBranchVec_new();
+%             branchVec = thisNetwork.getOrderedBranchVec();
+            
+            if min(min(branchVec == branchVec_test)) == 0
+                keyboard
+            end
+            
             nodeVec = thisNetwork.nodeVec;
             % remove the reference node
             refNode = thisNetwork.refNode;
@@ -364,14 +370,27 @@ classdef MsNetwork < handle
             nNode = numel(nodeVec); % = thisNetwork.nNode-1
             nBranch = numel(branchVec);
 
-            A = zeros(nNode, nBranch);
+%             A = zeros(nNode, nBranch);
+% 
+%             for j = 1:nBranch
+%                 for i = 1:nNode
+%                     A(i,j) = branchVec(j).getIncidenceCoeff(nodeVec(i));
+%                 end
+%             end
 
-            for j = 1:nBranch
-                for i = 1:nNode
-                    A(i,j) = branchVec(j).getIncidenceCoeff(nodeVec(i));
-                end
-            end
-
+            % A matrix using multiplication to gain speed
+            branch_node1 = [branchVec(:).node1];
+            branch_node2 = [branchVec(:).node2];
+            
+            branch_node1_id = [branch_node1(:).id];
+            branch_node2_id = [branch_node2(:).id];
+            nodeVec_id = [nodeVec(:).id];
+            
+            temp_mat_1 = nodeVec_id'*(1./branch_node1_id);
+            temp_mat_2 = nodeVec_id'*(1./branch_node2_id);
+            
+            A = (temp_mat_1==1) + -1.*(temp_mat_2==1);
+                        
             % iterate over all branches and collapse the corresponding column
             % of the incidence matrix if the branch has its collapsed flag set
             columnIdx = 1;
@@ -474,22 +493,22 @@ classdef MsNetwork < handle
                 ncBranchIdxVec(geIdx) = ncBranchIdxVec(geIdx) + 1;
             end
         end
-
+        
         function branchVec = getOrderedBranchVec(thisNetwork)
-        % GETORDEREDBRANCHVEC order the branches to generate a spanning tree
-        %
-        % This method will generate an ordering of the edges of the network.
-        % In generating a spanning tree, the edges that come first in this
-        % ordering will be preferred as spanning tree branches.
-        %
+            % GETORDEREDBRANCHVEC order the branches to generate a spanning tree
+            %
+            % This method will generate an ordering of the edges of the network.
+            % In generating a spanning tree, the edges that come first in this
+            % ordering will be preferred as spanning tree branches.
+            %
             % NOTE: IrNodeModule produces edges between a terminal and the
             % reference node even if it is not there in the Verilog-A code.
-
-            % oder branches of the network
+            
+            % order branches of the network
             branchVec = thisNetwork.branchVec;
             collapseBranchVec = MsBranch.empty; % branches that get collapsed
-                                                % eventually, i.e., not
-                                                % necessarily collapsed now 
+            % eventually, i.e., not
+            % necessarily collapsed now
             psBranchVec = MsBranch.empty; % potential source branches
             refBranchVec = MsBranch.empty; % reference branches
             indRefBranchVec = MsBranch.empty; % inductive reference branches
@@ -502,8 +521,8 @@ classdef MsNetwork < handle
             indBranchVec = MsBranch.empty; % inductive branches
             fsBranchVec = MsBranch.empty; % flow source branches
             remBranchVec = MsBranch.empty; % remaining branches (no contrib
-                                           % reference branches)
-
+            % reference branches)
+            
             refNode = thisNetwork.refNode;
             if isempty(refNode)
                 error(['Error ordering branch vector: this network does ',...
@@ -576,6 +595,81 @@ classdef MsNetwork < handle
             % come before capacitive branches. This is because we allow
             % reference branches to be zero-flow (i.e., without a
             % contribution).rFor other branches we 
+        end
+        
+        function branchVec = getOrderedBranchVec_new(thisNetwork)
+            % GETORDEREDBRANCHVEC order the branches to generate a spanning tree
+            %
+            % This method will generate an ordering of the edges of the network.
+            % In generating a spanning tree, the edges that come first in this
+            % ordering will be preferred as spanning tree branches.
+            %
+            % NOTE: IrNodeModule produces edges between a terminal and the
+            % reference node even if it is not there in the Verilog-A code.
+            
+            % order branches of the network
+            unorder_branchVec = thisNetwork.branchVec;
+%             collapseBranchVec = MsBranch.empty; % branches that get collapsed
+%             % eventually, i.e., not
+%             % necessarily collapsed now
+%             psBranchVec = MsBranch.empty; % potential source branches
+%             refBranchVec = MsBranch.empty; % reference branches
+%             indRefBranchVec = MsBranch.empty; % inductive reference branches
+%             capRefBranchVec = MsBranch.empty; % capacitive reference branches
+%             remRefBranchVec = MsBranch.empty; % remaining reference branches
+%             indOuterBranchVec = MsBranch.empty; % inductive terminal branches branches
+%             capOuterBranchVec = MsBranch.empty; % capacitive terminal branches branches
+%             remOuterBranchVec = MsBranch.empty; % remaining terminal branches branches
+%             capBranchVec = MsBranch.empty; % capacitive branches
+%             indBranchVec = MsBranch.empty; % inductive branches
+%             fsBranchVec = MsBranch.empty; % flow source branches
+%             remBranchVec = MsBranch.empty; % remaining branches (no contrib
+%             % reference branches)
+            
+            refNode = thisNetwork.refNode;
+            if isempty(refNode)
+                error(['Error ordering branch vector: this network does ',...
+                       'not have a reference node!']);
+            end
+
+            % New block
+            test_potential = [unorder_branchVec(:).potentialObj];
+            test_flow = [unorder_branchVec(:).flowObj];
+            
+            branch_isref_index = [unorder_branchVec(:).isAttrReference];
+            branch_isouter_index = [unorder_branchVec(:).isAttrOuter];
+            flow_iscontrib_index = [test_flow(:).contrib];
+            potential_iscontrib_index = [test_potential(:).contrib];
+            flow_issrc_index = [test_flow(:).source];
+            potential_issrc_index = [test_potential(:).source];
+            
+            capRefBranchVec_index = branch_isref_index &  flow_iscontrib_index;
+            indRefBranchVec_index = branch_isref_index & ~flow_iscontrib_index &  potential_iscontrib_index;
+            remRefBranchVec_index = branch_isref_index & ~flow_iscontrib_index & ~potential_iscontrib_index;
+            
+            capOuterBranchVec_index = ~branch_isref_index & branch_isouter_index & flow_iscontrib_index;
+            indOuterBranchVec_index = ~branch_isref_index & branch_isouter_index & ~flow_iscontrib_index &  potential_iscontrib_index;
+            remOuterBranchVec_index = ~branch_isref_index & branch_isouter_index & ~flow_iscontrib_index & ~potential_iscontrib_index;
+            
+            psBranchVec_index = ~branch_isref_index & ~branch_isouter_index & potential_issrc_index;
+            capBranchVec_index = ~branch_isref_index & ~branch_isouter_index & ~potential_issrc_index & flow_iscontrib_index;
+            indBranchVec_index = ~branch_isref_index & ~branch_isouter_index & ~potential_issrc_index & ~flow_iscontrib_index & potential_iscontrib_index;
+            fsBranchVec_index = ~branch_isref_index & ~branch_isouter_index & ~potential_issrc_index & ~flow_iscontrib_index & ~potential_iscontrib_index & flow_issrc_index;
+            remBranchVec_index = ~branch_isref_index & ~branch_isouter_index & ~potential_issrc_index & ~flow_iscontrib_index & ~potential_iscontrib_index & ~flow_issrc_index;
+            
+            branchVec =  [...
+                          unorder_branchVec(psBranchVec_index),...
+                          unorder_branchVec(indRefBranchVec_index),...
+                          unorder_branchVec(capRefBranchVec_index),...
+                          unorder_branchVec(remRefBranchVec_index),...
+                          unorder_branchVec(indOuterBranchVec_index),...
+                          unorder_branchVec(indBranchVec_index),...
+                          unorder_branchVec(capOuterBranchVec_index),...
+                          unorder_branchVec(capBranchVec_index),...
+                          unorder_branchVec(remOuterBranchVec_index),...
+                          unorder_branchVec(remBranchVec_index),...
+                          unorder_branchVec(fsBranchVec_index),...
+                         ];
         end
 
         function obl = getOrderedBranchList(thisNetwork)

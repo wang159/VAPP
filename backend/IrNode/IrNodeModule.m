@@ -90,16 +90,16 @@ classdef IrNodeModule < IrNode
             obj.disciplineMap = containers.Map();
             obj.network = MsNetwork();
             obj.connectedToModule = true;
-
+            
             if nargin > 0
                 obj.name = name;
                 obj.setTerminalList(terminalList);
             end
         end
-
+        
         function setTerminalList(thisModule, terminalList)
             nTerminal = numel(terminalList);
-
+            
             thisModule.terminalList = terminalList;
             thisModule.nTerminal = nTerminal;
             % reference node is the last terminal
@@ -341,8 +341,12 @@ classdef IrNodeModule < IrNode
 
             % now print the node collapse tree for IO definitions
             nodeCollapseTree = thisModule.nodeCollapseTree;
-            thisModule.setModelPrintMode(nodeCollapseTree, 'ioinit');
-            outStr = [outStr, nodeCollapseTree.sprintAll()];
+            
+            if ~isempty(nodeCollapseTree)
+                thisModule.setModelPrintMode(nodeCollapseTree, 'ioinit');
+                outStr = [outStr, nodeCollapseTree.sprintAll()];
+            end
+            
             outStr = [outStr, thisModule.sprintInitIos()];
 
             % print math stuff
@@ -355,26 +359,34 @@ classdef IrNodeModule < IrNode
             outStr = '';
 
             outStr = [thisModule.sprintfIndent(outStr), 'end\n\n'];
-
+            
             % print IO name assignment function
             outStr = [outStr, 'function [eonames, iunames, ienames] =',...
-                                                    ' get_oui_names__(MOD__)\n'];
+                ' get_oui_names__(MOD__)\n'];
             bodyStr = [thisModule.nodeCollapseParmStr, ...
-                                                 thisModule.nodeCollapseVarStr];
+                thisModule.nodeCollapseVarStr];
             nodeCollapseTree = thisModule.nodeCollapseTree;
-            thisModule.setModelPrintMode(nodeCollapseTree, 'iolist');
-            bodyStr = [bodyStr, nodeCollapseTree.sprintAll()];
+            
+            if ~isempty(nodeCollapseTree)
+                thisModule.setModelPrintMode(nodeCollapseTree, 'iolist');
+                bodyStr = [bodyStr, nodeCollapseTree.sprintAll()];
+            end
+            
             bodyStr = thisModule.sprintfIndent(bodyStr);
             outStr = [outStr, bodyStr, 'end\n\n'];
-
+            
             % print IO number print function
             outStr = [outStr, 'function [nFeQe, nFiQi, nOtherIo, nIntUnk] = ',...
-                                        'get_nfq__(MOD__)\n'];
+                'get_nfq__(MOD__)\n'];
             bodyStr = [thisModule.nodeCollapseParmStr, ...
-                                                 thisModule.nodeCollapseVarStr];
+                thisModule.nodeCollapseVarStr];
             nodeCollapseTree = thisModule.nodeCollapseTree;
-            thisModule.setModelPrintMode(nodeCollapseTree, 'ionumber');
-            bodyStr = [bodyStr, nodeCollapseTree.sprintAll()];
+            
+            if ~isempty(nodeCollapseTree)
+                thisModule.setModelPrintMode(nodeCollapseTree, 'ionumber');
+                bodyStr = [bodyStr, nodeCollapseTree.sprintAll()];
+            end
+            
             bodyStr = thisModule.sprintfIndent(bodyStr);
             outStr = [outStr, bodyStr, 'end\n\n'];
 

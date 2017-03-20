@@ -84,38 +84,38 @@ classdef MsBranch < handle
         end
 
         function pfObj = getPotentialOrFlow(thisBranch, accessLabel)
-        % GETPOTENTIALORFLOW
+            % GETPOTENTIALORFLOW
             potentialAccess = thisBranch.discipline.potential.access;
             flowAccess = thisBranch.discipline.flow.access;
-
+            
             if strcmp(accessLabel, potentialAccess)
                 pfObj = thisBranch.potentialObj;
             elseif strcmp(accessLabel, flowAccess)
                 pfObj = thisBranch.flowObj;
             else
                 error(['Access label (%s) does not match neither the flow',...
-                       ' (%s) nor the potential (%s) access of this branch!'],...
-                                                flowAccess, potentialAccess);
+                    ' (%s) nor the potential (%s) access of this branch!'],...
+                    flowAccess, potentialAccess);
             end
         end
-
+        
         function pObj = getPotential(thisBranch)
-        % GETPOTENTIAL
+            % GETPOTENTIAL
             pObj = thisBranch.potentialObj;
         end
-
+        
         function fObj = getFlow(thisBranch)
-        % GETFLOW
+            % GETFLOW
             fObj = thisBranch.flowObj;
         end
-
+        
         function discipline = getDiscipline(thisBranch)
-        % GETDISCIPLINE
+            % GETDISCIPLINE
             discipline = thisBranch.discipline;
         end
-
+        
         function flowNature = getFlowNature(thisBranch)
-        % GETFLOWNATURE
+            % GETFLOWNATURE
             flowNature = thisBranch.discipline.flow;
         end
 

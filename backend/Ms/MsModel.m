@@ -136,6 +136,7 @@ classdef MsModel < handle
                     % get the branch from terminal node to the ref node
                     branchLabel = [node.getLabel(), refNodeLabel];
                     branch = thisModel.getBranch(branchLabel);
+                    
                     potential = branch.getPotential();
                     if potential.isExpOut() == true
                         expOutPotentialVec = [expOutPotentialVec, potential];

@@ -357,10 +357,10 @@ classdef MsNetwork < handle
 
             branchVec = thisNetwork.getOrderedBranchVec_new();
 %             branchVec = thisNetwork.getOrderedBranchVec();
-            
-            if min(min(branchVec == branchVec_test)) == 0
-                keyboard
-            end
+%             
+%             if min(min(branchVec == branchVec_test)) == 0
+%                 keyboard
+%             end
             
             nodeVec = thisNetwork.nodeVec;
             % remove the reference node

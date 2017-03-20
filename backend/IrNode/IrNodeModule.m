@@ -122,7 +122,50 @@ classdef IrNodeModule < IrNode
                 nodeObj.setTerminal();
             end
         end
+        
+        function hasGnd = hasGlobalGroundTerminalFor(thisModule, forThisNodeObj)
+            % In case of a reference to ground or thermal node is
+            % found, we need to add to TerminalList a global ground
+            
+            forDiscipline = forThisNodeObj.discipline.name;
+            gndLabel = ['vapp_gnd_' forDiscipline];
+            
+            hasGnd = thisModule.hasNode(gndLabel);
+        end
+        
+        function addGlobalGroundTerminalFor(thisModule, forThisNodeObj)
+            % In case of a reference to ground or thermal node is
+            % found, we need to add to TerminalList a global ground
+            
+            forDiscipline = forThisNodeObj.discipline.name;
+            gndLabel = ['vapp_gnd_' forDiscipline];
+            
+%             thisModule.terminalList = [gndLabel thisModule.terminalList];
+            
+            % add Node
+            nodeObj = thisModule.addNode(gndLabel, forThisNodeObj.discipline);
+            nodeObj.setTerminal();
+            
+            % Add the node to reference node branch to the module.
+            thisModule.addBranch([gndLabel, thisModule.getRefLabel], gndLabel, thisModule.getRefLabel);
+            % add the inverse as well
+            thisModule.addBranch([thisModule.getRefLabel, gndLabel], gndLabel, thisModule.getRefLabel);
+        end
+        
+        function nodeObj = getGlobalGroundTerminalFor(thisModule, forThisNodeObj)
+            % In case of a reference to ground or thermal node is
+            % found, we need to add to TerminalList a global ground
+            
+            forDiscipline = forThisNodeObj.discipline.name;
+            gndLabel = ['vapp_gnd_' forDiscipline];
+            
+            thisModule.terminalList = [gndLabel thisModule.terminalList];
+            
+            % add Node
+            nodeObj = thisModule.getNode(gndLabel);
 
+        end
+        
         function terminalList = getTerminalList(thisModule)
             terminalList = thisModule.terminalList;
         end

@@ -1446,6 +1446,7 @@ function [AST, new_next_pos] = ...
     %        - see parse_analog_function_declaration() below
     %    * followed by zero or more of the following:
     %        * input statements,
+    %        * inout statements,
     %        * output statements, and
     %        * variable declarations
     %    * followed by a core statement or block,

@@ -278,7 +278,7 @@ function [toks, new_macro_definitions, new_context_stack, new_next_pos] = ...
 
     % make sure that the character at next_pos is indeed a backtick
     if input_str(next_pos) ~= '`'
-        error('Expected a "`", but did not find it');
+        VAPP_error('vapp-error', 'Expected a "`", but did not find it');
     end
 
     % figure out what the directive is, and do the needful
@@ -376,7 +376,7 @@ function [out, new_next_pos] = parse_identifier(input_str, next_pos, str_utils)
     % scan the first character
     ch = input_str(next_pos);
     if (~str_utils.is_alpha(ch) && ch ~= '_')
-        error('First character of identifier is not a letter/underscore');
+        VAPP_error('vapp-error', 'First character of identifier is not a letter/underscore');
     end
     scanned_chars = ch;
     next_pos = next_pos + 1;
@@ -482,7 +482,7 @@ function [arg_names, new_next_pos] = ...
 
     % check that the character at next_pos is indeed a '('
     if input_str(next_pos) ~= '('
-        error('Expected a "(" but did not find it');
+        VAPP_error('vapp-error', 'Expected a "(" but did not find it');
     end
 
     % scan subsequent characters
@@ -509,7 +509,7 @@ function [arg_names, new_next_pos] = ...
             % empty argument list
             break;
         elseif ~is_valid_identifier(arg_name, str_utils)
-            error(['Invalid arg_name: ', arg_name]);
+            VAPP_error('vapp-error', ['Invalid arg_name: ', arg_name]);
         else
             arg_names = [arg_names, {arg_name}];
         end
@@ -557,7 +557,7 @@ function eol_pos = next_end_of_line(input_str, next_pos, str_utils)
 
     while true
         if next_pos > length(input_str)
-            error('Input ended before end of line could be found');
+            VAPP_error('vapp-error', 'Input ended before end of line could be found');
         end
         ch = input_str(next_pos);
         if str_utils.is_newline_char(ch)
@@ -576,7 +576,7 @@ function new_macro_definitions = add_macro(macro, macro_definitions)
 
     % check to see if macro already exists; if so, raise an exception
     if macro_exists(macro.name, macro_definitions)
-%         error(['Multiple definitions for macro "', macro.name, '"']);
+%         VAPP_error('vapp-error', ['Multiple definitions for macro "', macro.name, '"']);
         VAPP_error('vapp-error',['Multiple definitions for macro "', macro.name, '"']);
     end
 
@@ -655,7 +655,7 @@ function new_macro_definitions = remove_macro(macro_name, macro_definitions)
     end
 
     if count ~= 1
-        error(['Macro "', macro_name, '" not defined exactly once']);
+        VAPP_error('vapp-error', ['Macro "', macro_name, '" not defined exactly once']);
     end
         
 end
@@ -697,7 +697,7 @@ function [toks, new_macro_definitions, new_next_pos] = ...
     % arg_toks should consist of a single token, which should be a string 
     % literal
     if length(arg_toks) ~= 1 || ~strcmp(arg_toks{1}.Type, 'S')
-        error('Argument of include does not tokenize into a string literal')
+        VAPP_error('vapp-error', 'Argument of include does not tokenize into a string literal')
     end
 
     % arg_toks{1} is indeed a string literal token: it specifies the path to 
@@ -710,7 +710,7 @@ function [toks, new_macro_definitions, new_next_pos] = ...
         search_dirs = [{parms.include_cwd}, parms.include_dirs];
         [success, full_path] = search_for_file(file_path, search_dirs);
         if ~success
-            error(['Include file "', file_path, ' "not found']);
+            VAPP_error('vapp-error', ['Include file "', file_path, ' "not found']);
         end
     end
 
@@ -921,7 +921,7 @@ function [toks, new_next_pos] = ...
     % search through the list of macros defined and identify the called macro
     [success, macro] = search_for_macro(macro_name, macro_definitions);
     if ~success
-        error(['Macro "', macro_name, '" called but not defined']);
+        VAPP_error('vapp-error', ['Macro "', macro_name, '" called but not defined']);
     end
 
     % if the macro is a function-like macro, extract an argument list from 
@@ -931,14 +931,14 @@ function [toks, new_next_pos] = ...
         next_pos = skip_whitespace(input_str, next_pos, str_utils);
 
         if input_str(next_pos) ~= '('
-            error('Expected a "(" but did not find it')
+            VAPP_error('vapp-error', 'Expected a "(" but did not find it')
         end
 
         [arg_strs, next_pos] = parse_actual_arg_strs(input_str, ...
                                                      next_pos, str_utils);
 
         if length(arg_strs) ~= length(macro.formal_arg_names)
-            error(['Macro "', macro.name, '": formal and actual args differ']);
+            VAPP_error('vapp-error', ['Macro "', macro.name, '": formal and actual args differ']);
         end
 
     end
@@ -1008,7 +1008,7 @@ function [arg_strs, new_next_pos] = ...
     
     % check that the character at next_pos is indeed a '('
     if input_str(next_pos) ~= '('
-        error('Expected a "(" but did not find it');
+        VAPP_error('vapp-error', 'Expected a "(" but did not find it');
     end
 
     % scan subsequent characters
@@ -1060,7 +1060,7 @@ function match_idx = find_matching_double_quote(input_str, next_pos, str_utils)
 
     % make sure the character at next_pos is a double quote
     if input_str(next_pos) ~= '"'
-        error('Expected an opening double quote but did not find it')
+        VAPP_error('vapp-error', 'Expected an opening double quote but did not find it')
     end
     next_pos = next_pos + 1;
     
@@ -1070,7 +1070,7 @@ function match_idx = find_matching_double_quote(input_str, next_pos, str_utils)
         ch = input_str(next_pos);
         if escape
             if ~str_utils.ch_in_str(ch, 'nt\"')
-                error(['Unrecognized escape sequence "\', ch, '"']);
+                VAPP_error('vapp-error', ['Unrecognized escape sequence "\', ch, '"']);
             end
             escape = false;
         else
@@ -1099,7 +1099,7 @@ function match_idx = find_matching_bracket(input_str, next_pos, str_utils)
     % make sure the character at next_pos is an open bracket character
     ch = input_str(next_pos);
     if ~str_utils.ch_in_str(ch, '({[')
-        error('Expected an opening bracket character but did not find it')
+        VAPP_error('vapp-error', 'Expected an opening bracket character but did not find it')
     end
     
     % initialize the stack
@@ -1126,14 +1126,14 @@ function match_idx = find_matching_bracket(input_str, next_pos, str_utils)
             % check that the top of the stack contains the correct opening
             % bracket that matches this close bracket just found
             if isempty(stack)
-                error('Stack is empty, but I expected to find an open bracket')
+                VAPP_error('vapp-error', 'Stack is empty, but I expected to find an open bracket')
             end
             top = stack{end};
             if (    (ch == ')' && top ~= '(') ...
                  || (ch == '}' && top ~= '{') ...
                  || (ch == ']' && top ~= '[') ...
                )
-                error('Top of stack does not match close bracket')
+                VAPP_error('vapp-error', 'Top of stack does not match close bracket')
             end
             % OK, top of stack holds the correct opening bracket: remove it 
             % from the stack
@@ -1169,7 +1169,7 @@ function [toks, new_next_pos] = ...
     
     % make sure that the character at next_pos is indeed a dollar character
     if input_str(next_pos) ~= '$'
-        error('Expected a "$", but did not find it');
+        VAPP_error('vapp-error', 'Expected a "$", but did not find it');
     end
 
     % figure out what the simulator directive is
@@ -1289,7 +1289,7 @@ function [toks, new_next_pos] = parse_number(input_str, next_pos, str_utils)
     if isempty(int_part)
         int_part = '0';
         if input_str(next_pos) ~= '.'
-            error('Expected a decimal point but did not find it')
+            VAPP_error('vapp-error', 'Expected a decimal point but did not find it')
         end
     end
     num_as_str = int_part;
@@ -1396,7 +1396,7 @@ function [out, new_next_pos] = ...
     end
 
     if (~possibly_empty && isempty(scanned_digits))
-        error('Expecting a digit but did not find it')
+        VAPP_error('vapp-error', 'Expecting a digit but did not find it')
     end
     
     out = scanned_digits;
@@ -1454,7 +1454,7 @@ function [toks, new_next_pos] = parse_string(input_str, next_pos, str_utils)
 
     % make sure the character at next_pos is a double quote
     if input_str(next_pos) ~= '"'
-        error('First character of string is not a double quote')
+        VAPP_error('vapp-error', 'First character of string is not a double quote')
     end
     scanned_chars = ''; 
     next_pos = next_pos + 1;
@@ -1471,7 +1471,7 @@ function [toks, new_next_pos] = parse_string(input_str, next_pos, str_utils)
             elseif (ch == '\' || ch == '"')
                 scanned_chars = [scanned_chars, ch];
             else
-                error(['Unrecognized escape sequence "\', ch, '"']);
+                VAPP_error('vapp-error', ['Unrecognized escape sequence "\', ch, '"']);
             end
             escape = false;
         else
@@ -1545,7 +1545,7 @@ function [toks, new_next_pos] = ...
     end
 
     if isempty(longest_matched_symbol)
-        error('Expected a punctuation symbol, but did not find it')
+        VAPP_error('vapp-error', 'Expected a punctuation symbol, but did not find it')
     end
 
     new_next_pos = orig_next_pos + length(longest_matched_symbol);

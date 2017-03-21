@@ -536,14 +536,14 @@ function out = convert_const_dtype(from_type, to_type, key)
         multi_map_lookup(idxs_err_msgs_multi_map, from_type, 1, 2);
 
     if ~success
-        error('Not a valid "from_type"');
+        VAPP_error('vapp-error', 'Not a valid "from_type"');
     end
 
     [success, value_idx] = ...
         multi_map_lookup(idxs_err_msgs_multi_map, to_type, 1, 2);
 
     if ~success
-        error('Not a valid "to_type"');
+        VAPP_error('vapp-error', 'Not a valid "to_type"');
     end
 
     multi_map = const_dtypes_multi_map();
@@ -631,7 +631,7 @@ function assert_subset(sub_cell, super_cell, str_utils)
     if ~is_subset(sub_cell, super_cell, str_utils)
         s_sub = str_utils.str_arr_to_str(sub_cell);
         s_super = str_utils.str_arr_to_str(super_cell);
-        error([s_sub, ' not a subset of ', s_super]);
+        VAPP_error('vapp-error', [s_sub, ' not a subset of ', s_super]);
     end
 end
 
@@ -5477,7 +5477,7 @@ function out = get_ariness(op, str_utils)
         end
     end
 
-    error(sprintf('Operator %s not found in ariness table', op));
+    VAPP_error('vapp-error', sprintf('Operator %s not found in ariness table', op));
 
 end
 
@@ -5613,7 +5613,7 @@ end
 function [item, new_stack] = stack_pop(stack)
 
     if isempty(stack)
-        error('Unable to pop: stack is empty');
+        VAPP_error('vapp-error', 'Unable to pop: stack is empty');
     end
 
     item = stack{end};
@@ -5624,7 +5624,7 @@ end
 function item = stack_peek(stack)
 
     if isempty(stack)
-        error('Unable to peek: stack is empty');
+        VAPP_error('vapp-error', 'Unable to peek: stack is empty');
     end
 
     item = stack{end};

@@ -42,11 +42,50 @@ switch errType
         
         stdout_header = '[VAPP Error]';
         
+        % Report to VALint
+        index = length(valintLog)+1;
+        
+        valintLog{index}=[];
+        valintLog{index}.infile_path = nodeinfo.filename;
+        
+        valintLog{index}.lineno = nodeinfo.lineno;
+        valintLog{index}.linepos = nodeinfo.linepos;
+        errOpts.valint_rule='';
+        errOpts.rule_id = 0;
+        errOpts.opt = 1;
+        valintLog{index}.valint_msg = {errOpts.rule_id, 'error', errMsg, errOpts.rule_id, errOpts.opt};
+        
     case 'vapp-warning'
         stdout_header = '[VAPP Warning]';
         
+        % Report to VALint
+        index = length(valintLog)+1;
+        
+        valintLog{index}=[];
+        valintLog{index}.infile_path = nodeinfo.filename;
+        
+        valintLog{index}.lineno = nodeinfo.lineno;
+        valintLog{index}.linepos = nodeinfo.linepos;
+        errOpts.valint_rule='';
+        errOpts.rule_id = 0;
+        errOpts.opt = 1;
+        valintLog{index}.valint_msg = {errOpts.rule_id, 'warning', errMsg, errOpts.rule_id, errOpts.opt};
+        
     case 'vapp-notice'
         stdout_header = '[VAPP Notice]';
+        
+        % Report to VALint
+        index = length(valintLog)+1;
+        
+        valintLog{index}=[];
+        valintLog{index}.infile_path = nodeinfo.filename;
+        
+        valintLog{index}.lineno = nodeinfo.lineno;
+        valintLog{index}.linepos = nodeinfo.linepos;
+        errOpts.valint_rule='';
+        errOpts.rule_id = 0;
+        errOpts.opt = 1;
+        valintLog{index}.valint_msg = {errOpts.rule_id, 'notice', errMsg, errOpts.rule_id, errOpts.opt};
         
     case 'lint-error'
         % VALint: error type
@@ -103,7 +142,7 @@ end
 if terminate_program
     error(['    ' errMsg]);
 else
-    fprintf('    ^ %s\n\n', errMsg);
+    fprintf('    %s\n\n', errMsg);
 end
 
 output = valintLog;
@@ -123,13 +162,21 @@ switch class(errNode)
         
     case 'struct'
         % likely a token from VAPP frontend
-        nodeinfo.origin_content = errNode.value;
+        %nodeinfo.origin_content = errNode.value;
         nodeinfo.filename = errNode.infile_path;
         nodeinfo.lineno = errNode.lineno;
         nodeinfo.linepos = errNode.linepos;
         
     otherwise
-        
+        try
+            % likely a node from VAPP backend
+            %nodeinfo.origin_content = errNode.sprintAll;
+            nodeinfo.filename = errNode.getPosition{1}.infile_path;
+            nodeinfo.lineno = errNode.getPosition{1}.lineno;
+            nodeinfo.linepos = errNode.getPosition{1}.linepos;
+        catch
+            
+        end
 end
 end
 

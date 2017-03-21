@@ -13,7 +13,7 @@ function VAPP_lint(AST, IR, output_format)
         
 % VALint check
 valint_check(AST); % AST tree check
-% valint_new_ir(IR); % IR tree check
+valint_new_ir(IR); % IR tree check
 
 % VALint result structure
 vapp_error_log = VAPP_error('nothing','','','');

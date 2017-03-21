@@ -279,7 +279,7 @@ classdef VAPP_AST_Node < handle & matlab.mixin.Copyable
         function varargout = get_child_names(self)
             nChild = self.get_num_children();
             if nargout ~= nChild
-                error('Number of outputs does not match the number of children!');
+                VAPP_error('vapp-error', 'Number of outputs does not match the number of children!');
             else
                 for i=1:nChild
                     varargout{i} = self.children{i}.get_attr('name');

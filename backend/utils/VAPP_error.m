@@ -140,6 +140,13 @@ if ~isempty(nodeinfo.origin_content)
 end
 
 if terminate_program
+    % Heading toward a hard error stop. Emit all lint results before error
+    
+    if exist('valint_print', 'file')
+        valint_result = valint_make_print_struct(valintLog, {});
+        valint_print(valint_result, 'nanoHUB');
+    end
+    
     error(['    ' errMsg]);
 else
     fprintf('    %s\n\n', errMsg);

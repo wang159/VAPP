@@ -321,7 +321,7 @@ classdef IrNodeOperation < IrNodeNumerical
 
             if thisNode.hasOpType({'+', '-', '*', '/', 'u+', 'u-','**', '?:',...
                                    '>', '>=', '<', '<='}) == false
-                error('The operation %s cannot be used in a derivative!', opType);
+                VAPP_error('vapp-error', sprintf('The operation %s cannot be used in a derivative!', opType), derivObj);
             end
 
             if thisNode.hasOpType({'+', '-', 'u+', 'u-'})

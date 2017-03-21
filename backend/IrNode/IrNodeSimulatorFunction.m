@@ -32,7 +32,7 @@ classdef IrNodeSimulatorFunction < IrNodeFunction
 
             if thisSimFunc.hasName('param_given')
                 if thisSimFunc.getNChild() > 1
-                    error(['$param_given simulator function can only have',...
+                    VAPP_error('vapp-error', ['$param_given simulator function can only have',...
                            ' one argument!']);
                 end
                 outStr = ['''', outStr, '''', ', MOD__'];

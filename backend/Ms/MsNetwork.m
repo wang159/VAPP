@@ -140,9 +140,9 @@ classdef MsNetwork < handle
                 defBranchVec = chordVec(chordIdx);
                 defSignVec = twigRow(chordIdx);
             else
-                error(['You have provided a branch that has an independent',...
+                VAPP_error('vapp-error', ['You have provided a branch that has an independent',...
                        ' flow. It cannot be expressed in terms of',...
-                       ' other flows in the network!']);
+                       ' other flows in the network!'], branchObj);
             end
         end
 
@@ -161,9 +161,9 @@ classdef MsNetwork < handle
                 defBranchVec = twigVec(twigIdx);
                 defSignVec = chordRow(twigIdx);
             else
-                error(['You have provided a branch that has an independent',...
+                VAPP_error('vapp-error', ['You have provided a branch that has an independent',...
                        ' potential. It cannot be expressed in terms of',...
-                       ' other potentials in the network!']);
+                       ' other potentials in the network!'], branchObj);
             end
         end
 
@@ -193,8 +193,8 @@ classdef MsNetwork < handle
                 depTwigIdx = find(D_c(:, chordIdx) ~= 0);
                 depBranchVec = twigVec(depTwigIdx);
             else
-                error(['This branch has not been marked either as a twig',...
-                       ' or a chord!']);
+                VAPP_error('vapp-error', ['This branch has not been marked either as a twig',...
+                       ' or a chord!'], branchObj);
             end
         end
 
@@ -203,8 +203,8 @@ classdef MsNetwork < handle
         % The cut is described by the twigObj (since every twig corresponds to
         % a cut).
             if twigObj.isTwig() == false
-                error(['The argument to this function must be a branch',...
-                       ' object which has been marked as a twig!']);
+                VAPP_error('vapp-error', ['The argument to this function must be a branch',...
+                       ' object which has been marked as a twig!'], twigObj);
             end
 
             % A cut separates a network into two unconnected components.
@@ -525,8 +525,8 @@ classdef MsNetwork < handle
             
             refNode = thisNetwork.refNode;
             if isempty(refNode)
-                error(['Error ordering branch vector: this network does ',...
-                       'not have a reference node!']);
+                VAPP_error('vapp-error', ['Error ordering branch vector: this network does ',...
+                       'not have a reference node!'], thisNetwork);
             end
 
             for branchObj = branchVec
@@ -628,8 +628,8 @@ classdef MsNetwork < handle
             
             refNode = thisNetwork.refNode;
             if isempty(refNode)
-                error(['Error ordering branch vector: this network does ',...
-                       'not have a reference node!']);
+                VAPP_error('vapp-error', ['Error ordering branch vector: this network does ',...
+                       'not have a reference node!'], thisNetwork);
             end
 
             % New block

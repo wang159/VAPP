@@ -41,9 +41,9 @@ classdef MsBranch < handle
             % NOTE: we will receive an error if the two nodes are already
             % connected
             if nodeObj1.hasCompatibleDiscipline(nodeObj2) == false
-                error(['Cannot create branch: node "%s" and node "%s" do',...
+                VAPP_error('vapp-error', sprintf(['Cannot create branch: node "%s" and node "%s" do',...
                        ' not have the same discipline!'], nodeObj1.getLabel,...
-                                                          nodeObj2.getLabel);
+                                                          nodeObj2.getLabel), nodeObj1);
             end
 
             obj.node1 = nodeObj1;
@@ -79,7 +79,7 @@ classdef MsBranch < handle
             elseif thisBranch.node2 == aNode
                 otherNode = thisBranch.node1;
             else
-                error('Error this branch is not connected to %s!', aNode.getLabel());
+                VAPP_error('vapp-error', sprintf('Error this branch is not connected to %s!', aNode.getLabel()), aNode);
             end
         end
 
@@ -93,9 +93,9 @@ classdef MsBranch < handle
             elseif strcmp(accessLabel, flowAccess)
                 pfObj = thisBranch.flowObj;
             else
-                error(['Access label (%s) does not match neither the flow',...
+                VAPP_error('vapp-error', sprintf(['Access label (%s) does not match neither the flow',...
                     ' (%s) nor the potential (%s) access of this branch!'],...
-                    flowAccess, potentialAccess);
+                    flowAccess, potentialAccess), thisBranch);
             end
         end
         
@@ -191,7 +191,7 @@ classdef MsBranch < handle
             if thisBranch.hasAlias(aliasStr)
                 out = thisBranch.aliasMap(aliasStr) == -1;
             else
-                error('This branch does not have the alias ''%s''', aliasStr);
+                VAPP_error('vapp-error', sprintf('This branch does not have the alias ''%s''', aliasStr), thisBranch);
             end
         end
 
@@ -202,7 +202,7 @@ classdef MsBranch < handle
             elseif nodeObj2 == thisBranch.node1 && nodeObj1 == thisBranch.node2
                 out = -1;
             else
-                error('The supplied nodes do not match with the nodes of this branch!');
+                VAPP_error('vapp-error', 'The supplied nodes do not match with the nodes of this branch!', thisBranch);
             end
         end
 
@@ -213,8 +213,8 @@ classdef MsBranch < handle
         % bDir = -1 if branch goes into nodeObj
             bDir = thisBranch.getIncidenceCoeff(nodeObj);
             if bDir == 0
-                error('This branch is not connected to node %s!',...
-                                                         nodeObj.getLabel());
+                VAPP_error('vapp-error', sprintf('This branch is not connected to node %s!',...
+                                                         nodeObj.getLabel()), nodeObj);
             end
         end
 
@@ -236,8 +236,8 @@ classdef MsBranch < handle
         function setTwig(thisBranch)
         % SETTWIG
             if thisBranch.chord == true
-                error(['Cannot set branch as twig because it is marked as',...
-                       ' a chord.']);
+                VAPP_error('vapp-error', ['Cannot set branch as twig because it is marked as',...
+                       ' a chord.'], thisBranch);
             else
                 thisBranch.twig = true;
             end
@@ -246,8 +246,8 @@ classdef MsBranch < handle
         function setChord(thisBranch)
         %  SETCHORD
             if thisBranch.twig == true
-                error(['Cannot set branch as chord because it is marked as',...
-                       ' a twig.']);
+                VAPP_error('vapp-error',['Cannot set branch as chord because it is marked as',...
+                       ' a twig.'], thisBranch);
             else
                 thisBranch.chord = true;
             end
@@ -302,8 +302,8 @@ classdef MsBranch < handle
                     tNode = nodeObj2;
                 end
             else
-                error(['Cannot get terminal node. This branch is not a',...
-                       ' reference branch!']);
+                VAPP_error('vapp-error', ['Cannot get terminal node. This branch is not a',...
+                       ' reference branch!'], thisBranch);
             end
 
         end
@@ -334,9 +334,9 @@ classdef MsBranch < handle
                 % nodes (terminals) because hicum does it but this should
                 % really be disallowed.
                 nodeLabelArr = thisBranch.getNodeLabels();
-                fprintf(2, ['Warning: a branch is collapsed that connects',...
+                VAPP_error('vapp-warning', sprintf(['A branch is collapsed that connects',...
                             ' two terminals: (%s, %s).\n'], nodeLabelArr{1},...
-                                                            nodeLabelArr{2});
+                                                            nodeLabelArr{2}), thisBranch);
                 thisBranch.collapsedWarningDisplayed = true;
             end
         end

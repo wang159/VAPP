@@ -211,7 +211,7 @@ classdef IrNodeNumerical < IrNode
         function uMinusNode = getNegativeOfNode(irNode)
         % GETNEGATIVEOFNODE
             if isa(irNode, 'IrNodeNumerical') == false
-                error(['This node cannot be used in the getNegativeOfNode ',...
+                VAPP_error('vapp-error', ['This node cannot be used in the getNegativeOfNode ',...
                     'function because it is not of class IrNodeNumerical!']);
             end
 
@@ -304,7 +304,7 @@ classdef IrNodeNumerical < IrNode
 
             nRhsNode = numel(rhsNodeVec);
             if numel(signVec) ~= nRhsNode
-                error('Number of rhs nodes and number of signs do not match!');
+                VAPP_error('vapp-error', 'Number of rhs nodes and number of signs do not match!');
             end
 
             if signVec(1) == 1

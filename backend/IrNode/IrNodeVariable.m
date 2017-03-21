@@ -21,7 +21,7 @@ classdef IrNodeVariable < IrNodeDifferentiable
             elseif ischar(varNameOrObj) == true 
                 obj.label = varNameOrObj;
             else
-                error(['A variable node can only be created either by a',...
+                VAPP_error('vapp-error', ['A variable node can only be created either by a',...
                        ' variable label or a MsVariable object']);
             end
 
@@ -76,8 +76,7 @@ classdef IrNodeVariable < IrNodeDifferentiable
             varSfx = thisVarNode.VARSFX;
 
             if derivObj == varObj
-                error(['Derivative of %s is being set to zero with respect '...,
-                      'to itself!'], varObj.getName());
+                VAPP_error('vapp-error', sprintf('Derivative of %s is being set to zero with respect to itself!', varObj.getName()), derivObj);
             elseif varObj.isDependentOnDerivObj(derivObj)
                 derVarName = [varObj.getDerivLabel(derivObj), varSfx];
                 topModule = thisVarNode.getModule();

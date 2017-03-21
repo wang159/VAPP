@@ -40,7 +40,7 @@ classdef IrNodeIfElse < IrNode
         function addChild(thisIe, childNode)
         % ADDCHILD
             if thisIe.nChild == 3
-                error(['Error adding a child to an IrNodeIfElse. This node',...
+                VAPP_error('vapp-error', ['Error adding a child to an IrNodeIfElse. This node',...
                        ' already has 3 children!']);
             end
             addChild@IrNode(thisIe, childNode);

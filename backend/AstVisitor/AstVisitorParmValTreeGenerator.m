@@ -24,8 +24,8 @@ classdef AstVisitorParmValTreeGenerator < AstVisitorIrGenerator
             out{1} = false;
 
             if module.isParm(parmName) == false
-                error('The parameter %s was not defined in this module!',...
-                                                                parmName);
+               VAPP_error('vapp-error', sprintf('The parameter %s was not defined in this module!',...
+                                                                parmName), varNode);
             elseif module.isParm(parmName)
                 parmObj = module.getParm(parmName);
                 defValTree = parmObj.getDefValTree();

@@ -45,9 +45,8 @@ classdef IrVisitorMark003 < IrVisitor
                                         thisVisitor.module.isFunc(funcName)
                 % reserved for later
             else
-                error(['The function "%s" is not one of VAPP''s built-in ',...
-                    'functions; nor is it defined by the Verilog-A model!'],...
-                                                                    funcName);
+                VAPP_error('vapp-error', sprintf('The function "%s" is not one of VAPP''s built-in functions; nor is it defined by the Verilog-A model!',...
+                                                                    funcName), funcNode);
             end
 
 
@@ -84,9 +83,8 @@ classdef IrVisitorMark003 < IrVisitor
                 % appering in assignments.
 
                 if isa(parentNode, 'IrNodeContribution') == false
-                    error(['Error at ddt(%s). The ddt function has no ',...
-                        'valid path to a contribution node!'],...
-                                                funcNode.getChild(1).sprintAll());
+                    VAPP_error('vapp-error', sprintf('Error at ddt(%s). The ddt function has no valid path to a contribution node!',...
+                                                funcNode.getChild(1).sprintAll()), funcNode);
 
                 end
 

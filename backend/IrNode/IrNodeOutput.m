@@ -45,7 +45,7 @@ classdef IrNodeOutput < IrNodeNumerical
         function setOutIdx(thisOutput, outIdx)
         % SETOUTIDX
             if thisOutput.outIdx ~= 0
-                error(['Cannot set output index because this output object',...
+                VAPP_error('vapp-error', ['Cannot set output index because this output object',...
                        ' has already another one!']);
             else
                 thisOutput.outIdx = outIdx;
@@ -107,7 +107,7 @@ classdef IrNodeOutput < IrNodeNumerical
             varSfx = thisOutput.VARSFX;
 
             if numel(signVec) ~= nRhsPf
-                error('Number of rhs nodes and number of signs do not match!');
+                VAPP_error('vapp-error', 'Number of rhs nodes and number of signs do not match!');
             end
 
             if strcmp(fOrQ, 'f')

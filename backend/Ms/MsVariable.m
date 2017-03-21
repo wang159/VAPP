@@ -99,7 +99,7 @@ classdef MsVariable < MsDifferentiable
                 for pfObj = thisVar.dependPfVec
                     errorStr = sprintf([errorStr, pfObj.getLabel(), '\n']);
                 end
-                error(errorStr);
+                VAPP_error('vapp-error', errorStr, thisVar);
             else
                 thisVar.inNodeCollapse = true;
             end
@@ -113,10 +113,10 @@ classdef MsVariable < MsDifferentiable
         function addDependPf(thisVar, pfObj)
         % ADDDEPENDPF
             if thisVar.inNodeCollapse == true
-                error(['A node collapse statement depends on the variable',...
+                VAPP_error('vapp-error', sprintf(['A node collapse statement depends on the variable',...
                        ' "%s" whose value depends on the potential/flow',...
                        ' "%s". Bias dependent node collapse statements are',...
-                       ' not allowed!'], thisVar.getLabel(), pfObj.getLabel());
+                       ' not allowed!'], thisVar.getLabel(), pfObj.getLabel()), pfObj);
             end
             addDependPf@MsDifferentiable(thisVar, pfObj);
         end

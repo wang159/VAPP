@@ -76,8 +76,8 @@ classdef MsNode < handle
             if isempty(thisNode.network) == true
                 thisNode.network = networkObj;
             else
-                error(['Cannot set network of node %s because it already ',...
-                      'belongs to a network!'], thisNode.label);
+                VAPP_error('vapp-error', sprintf(['Cannot set network of node %s because it already ',...
+                      'belongs to a network!'], thisNode.label), thisNode);
             end
         end
 
@@ -96,9 +96,9 @@ classdef MsNode < handle
             if isempty(thisNode.discipline) == false
                 discipStruct = thisNode.discipline;
             else
-                error(['The node %s has no discipline set for it.',...
+                VAPP_error('vapp-error', sprintf(['The node %s has no discipline set for it.',...
                        ' Discipline statements have to come before, e.g.,',...
-                       ' branch declarations.'], thisNode.label);
+                       ' branch declarations.'], thisNode.label), thisNode);
             end
         end
 
@@ -107,9 +107,9 @@ classdef MsNode < handle
             if isempty(thisNode.discipline) == false
                 discipName = thisNode.discipline.name;
             else
-                error(['The node %s has no discipline set for it.',...
+                VAPP_error('vapp-error', sprintf(['The node %s has no discipline set for it.',...
                        ' Discipline statements have to come before, e.g.,',...
-                       ' branch declarations.'], thisNode.label);
+                       ' branch declarations.'], thisNode.label), thisNode);
             end
         end
 
@@ -137,7 +137,7 @@ classdef MsNode < handle
         % ISCONNECTEDTO
 
             if aNode == thisNode
-                error('You are probing if this node is connected to itself!');
+                VAPP_error('vapp-error', 'You are probing if this node is connected to itself!', aNode);
             end
 
             branch = thisNode.getBranch(aNode);
@@ -179,9 +179,9 @@ classdef MsNode < handle
             if isempty(thisNode.getBranch(otherNode))
                 thisNode.branchVec = [thisNode.branchVec, branchObj];
             else
-                error(['Cannot add this branch! ', ...
+                VAPP_error('vapp-error', sprintf(['Cannot add this branch! ', ...
                        '%s is already connected to %s with another ',...
-                       'branch.'], thisNode.getLabel(), otherNode.getLabel());
+                       'branch.'], thisNode.getLabel(), otherNode.getLabel()), branchObj);
             end
 
             if isempty(thisNode.network) == false
@@ -230,7 +230,7 @@ classdef MsNode < handle
         % HASTWIGOTHERTHAN
             out = false;
             if thisNode.hasBranch(twig) == false
-                error('This node does not have this twig (%s)!', twig.getLabel());
+                VAPP_error('vapp-error', sprintf('This node does not have this twig (%s)!', twig.getLabel()), thisNode);
             end
 
             for branch = thisNode.branchVec

@@ -67,7 +67,7 @@ classdef IrNode < handle & matlab.mixin.Heterogeneous & matlab.mixin.Copyable
                     thisNode.setConnectedToModule();
                 end
             else
-                error(['This node has already a parent. ',...
+                VAPP_error('vapp-error', ['This node has already a parent. ',...
                        'Use removeParent function first to remove it.']);
             end
         end

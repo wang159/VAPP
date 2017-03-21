@@ -225,9 +225,9 @@ classdef MsPotentialFlow < MsDifferentiable & matlab.mixin.Heterogeneous
                 savedState.inIdx = thisPf.inIdx;
                 thisPf.savedState = savedState;
             else
-                error(['Error trying to save the contrib/probe status of',...
+                VAPP_error('vapp-error', sprintf(['Error trying to save the contrib/probe status of',...
                        ' the potential/flow %s. This potential/flow has',...
-                       ' already a saved state.'], thisPf.getLabel());
+                       ' already a saved state.'], thisPf.getLabel()), thisPf);
             end
         end
 
@@ -258,8 +258,8 @@ classdef MsPotentialFlow < MsDifferentiable & matlab.mixin.Heterogeneous
         function setContribIdx(thisPF, cIdx)
         % SETCONTRIBIDX
             if thisPF.contribIdx > cIdx
-                error(['Error setting contribIdx. The new contribIdx',...
-                       ' cannot be smaller than the old one!']);
+                VAPP_error('vapp-error', ['Error setting contribIdx. The new contribIdx',...
+                       ' cannot be smaller than the old one!'], thisPF);
             else
                 thisPF.contribIdx = cIdx;
             end
@@ -268,8 +268,8 @@ classdef MsPotentialFlow < MsDifferentiable & matlab.mixin.Heterogeneous
         function setProbeIdx(thisPF, pIdx)
         % SETPROBEIDX
             if thisPF.probeIdx < pIdx
-                error(['Error setting probeIdx. The new probeIdx cannot be',...
-                       ' greater than the old one!']);
+                VAPP_error('vapp-error', ['Error setting probeIdx. The new probeIdx cannot be',...
+                       ' greater than the old one!'], thisPF);
             else
                 thisPF.probeIdx = pIdx;
             end

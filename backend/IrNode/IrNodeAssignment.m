@@ -48,7 +48,7 @@ classdef IrNodeAssignment < IrNodeNumerical
         function addChild(thisNode, childNode)
         % ADDCHILD
             if thisNode.nChild == 2
-                error(['This assignment already has 2 children. The number',...
+                VAPP_error('vapp-error', ['This assignment already has 2 children. The number',...
                        ' of children in an assignment cannot be more than 2!']);
             else
                 addChild@IrNode(thisNode, childNode);

@@ -115,7 +115,7 @@ classdef IrNodePotentialFlow < IrNodeDifferentiable
 
         function setOnDdtPath(thisPF)
             % a potential/flow cannot be on a ddt path
-            error('A potential/flow object cannot be on a ddt path!');
+            VAPP_error('vapp-error', 'A potential/flow object cannot be on a ddt path!', thisPF);
         end
 
         function out = isPotential(thisPF)
@@ -245,8 +245,8 @@ classdef IrNodePotentialFlow < IrNodeDifferentiable
                 elseif strcmp(fOrQ, 'q') == true
                     qWanted = true;
                 else
-                    error(['The second argument of this method must be either',...
-                           ' ''f'' or ''q''!']);
+                    VAPP_error('vapp-error', ['The second argument of this method must be either',...
+                           ' ''f'' or ''q''!'], thisPF);
                 end
             end
 

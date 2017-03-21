@@ -180,25 +180,25 @@ classdef AstVisitorIrGenerator < AstVisitor
             [nodeLabel1, nodeLabel2] = branchNode.get_child_names();
             % does the branch have exactly two children?
             if branchNode.get_num_children() ~= 2
-                error(['Error defining brach: %s. A branch must be between ',...
+                VAPP_error('vapp-error', sprintf(['Error defining brach: %s. A branch must be between ',...
                        'exactly two nodes.\n',...
                        'Needs compatible Verilog-A does not allow ', ...
                        'global ground access from within the model. ',...
                        'If you would like to use a probe with reference ',...
                        'to the global ground, please explicitly define ',...
                        'a ground terminal in your model.'],...
-                                                    branchLabel);
+                                                    branchLabel));
             end
             nodeObj1 = module.getNode(nodeLabel1);
             if isempty(nodeObj1) == true
-                error(['You have defined the branch %s, but its first node',...
-                       ' %s is unknown to me!'], branchLabel, nodeLabel1);
+                 VAPP_error('vapp-error', sprintf(['You have defined the branch %s, but its first node',...
+                       ' %s is unknown to me!'], branchLabel, nodeLabel1), branchNode);
             end
 
             nodeObj2 = module.getNode(nodeLabel2);
             if isempty(nodeObj2) == true
-                error(['You have defined the branch %s, but its second node',...
-                       ' %s is unknown to me!'], branchLabel, nodeLabel2);
+                 VAPP_error('vapp-error', sprintf(['You have defined the branch %s, but its second node',...
+                       ' %s is unknown to me!'], branchLabel, nodeLabel2), branchNode);
             end
 
             % was this branch already defined for this module?
@@ -206,9 +206,9 @@ classdef AstVisitorIrGenerator < AstVisitor
                 exBranch = module.getBranch(branchLabel);
                 [exNodeObj1, exNodeObj2] = exBranch.getNodes();
                 if nodeObj1 ~= exNodeObj1 || nodeObj2 ~= exNodeObj2
-                error(['Error defining branch: the branch %s has been',...
+                 VAPP_error('vapp-error', sprintf(['Error defining branch: the branch %s has been',...
                        ' defined previously between nodes %s and %s.'],...
-                        branchLabel, exNodeObj1.getLabel(), exNodeObj2.getLabel());
+                        branchLabel, exNodeObj1.getLabel(), exNodeObj2.getLabel()), branchNode);
                 end
             end
 
@@ -256,12 +256,12 @@ classdef AstVisitorIrGenerator < AstVisitor
             isNodeParm = module.isParm(varOrParmName);
             isNodeVar = module.isVar(varOrParmName);
             if isNodeParm == true && isNodeVar == true
-                error('The parameter %s was redeclared as a variable!',...
-                                                                varOrParmName);
+                VAPP_error('vapp-error', sprintf('The parameter %s was redeclared as a variable!',...
+                                                                varOrParmName), varNode);
             elseif isNodeParm == false && isNodeVar == false
-                error(['The variable or parameter %s was not defined in ',...
+                VAPP_error('vapp-error', sprintf(['The variable or parameter %s was not defined in ',...
                                                         'this the module %s!'],...
-                                                varOrParmName, module.getName());
+                                                varOrParmName, module.getName()), varNode);
             elseif module.isParm(varOrParmName)
                 parmObj = module.getParm(varOrParmName);
                 out{2} = IrNodeParameter(parmObj);
@@ -410,14 +410,12 @@ classdef AstVisitorIrGenerator < AstVisitor
                             
                             if isempty(nodeObj1) == true
                                 errMsg = sprintf('"%s", is not a node identfier!', nodeLabel1);
-                                errorAtAstNode(errMsg, accessNode);
-                                error('Exiting IR generator!');
+                                VAPP_error('vapp-error', errMsg, accessNode);
                             end
                             
                             if isempty(nodeObj2) == true
                                 errMsg = sprintf('"%s", is not a node identfier!', nodeLabel2);
-                                errorAtAstNode(errMsg, accessNode);
-                                error('Exiting IR generator!');
+                                VAPP_error('vapp-error', errMsg, accessNode);
                             end
                             
                             if nodeObj1.isConnectedTo(nodeObj2)
@@ -503,14 +501,12 @@ classdef AstVisitorIrGenerator < AstVisitor
 
                 if isempty(nodeObj1) == true
                     errMsg = sprintf('"%s", is not a node identfier!', nodeLabel1);
-                    errorAtAstNode(errMsg, accessNode);
-                    error('Exiting IR generator!');
+                    VAPP_error('vapp-error', errMsg, accessNode);
                 end
 
                 if isempty(nodeObj2) == true
                     errMsg = sprintf('"%s", is not a node identfier!', nodeLabel2);
-                    errorAtAstNode(errMsg, accessNode);
-                    error('Exiting IR generator!');
+                    VAPP_error('vapp-error', errMsg, accessNode);
                 end
 
                 if nodeObj1.isConnectedTo(nodeObj2)
@@ -528,9 +524,9 @@ classdef AstVisitorIrGenerator < AstVisitor
 
                 pfObj = branchObj.getPotentialOrFlow(accessLabel);
             else
-                error(['Found a Potential or Flow node with a number of ',...
+                VAPP_error('vapp-error', ['Found a Potential or Flow node with a number of ',...
                        'children that is not equal to ONE or TWO! ',...
-                       'Something is wrong.']);
+                       'Something is wrong.'], accessNode);
             end
 
             out{2} = IrNodePotentialFlow(pfObj, inverseNodeOrder);

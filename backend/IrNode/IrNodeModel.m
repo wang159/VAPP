@@ -68,8 +68,8 @@ classdef IrNodeModel < IrNode
             if any(strcmp(printMode, IrNodeModel.VALIDPRINTMODES)) == true
                 thisModel.printMode = printMode;
             else
-                error('Error in IrNodeModel: %s is not a valid print mode!', ...
-                                                                    printMode);
+                VAPP_error('vapp-error', sprintf('Error in IrNodeModel: %s is not a valid print mode!', ...
+                                                                    printMode));
             end
         end
 

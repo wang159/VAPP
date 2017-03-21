@@ -347,7 +347,7 @@ classdef IrNodeFunction < IrNodeNumerical
         function dDdt = derivDdt(thisFunc, argNum)
 
             % this function should never be called
-            error('Derivative of ''ddt'' requested!');
+            VAPP_error('vapp-error', 'Derivative of ''ddt'' requested!');
         end
 
         function newFuncName = convertFuncName(thisFunc)

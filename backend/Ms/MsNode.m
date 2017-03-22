@@ -8,7 +8,7 @@ classdef MsNode < handle
 % Last modified: Thu Aug 25, 2016  10:49AM
 %==============================================================================
     properties (Access = public)
-       id = '';
+       id = ''; % unique ID for this node
        label = '';
        terminal = false;
        reference = false;
@@ -25,7 +25,9 @@ classdef MsNode < handle
             obj.label = label;
             
             while 1
-                
+                % generate a unique ID for this node. 
+                % TODO: This is wrong. Need to generate non-repeating
+                % numbers
                 candidate_id = randi(100000);
                 candidate_id_inv = 1/candidate_id;
                 

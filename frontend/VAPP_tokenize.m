@@ -35,10 +35,11 @@ function [tok_list, new_macro_definitions, new_context_stack] = ...
 
     tok_list = {}; next_pos = skip_whitespace(input_str, 1, str_utils);
     while next_pos <= length(input_str)
+        
         pre_pos = next_pos; % record start location of the token
-
+        
         ch = input_str(next_pos);
-
+        
         if ch == '`'
             % compiler directive
             [toks, macro_definitions, context_stack, next_pos] = ...
@@ -90,7 +91,16 @@ function [tok_list, new_macro_definitions, new_context_stack] = ...
         end
         
         if ~isempty(toks) && is_permissive(context_stack)
-            toks{1}.range = [pre_pos next_pos-1]; % index range of this token over the file string
+            if isfield(parms, 'start_pos')
+                % nested call with a starting position offset                
+                range_pos_1 = pre_pos + parms.start_pos;
+                range_pos_2 = next_pos-1+parms.start_pos;
+            else
+                range_pos_1 = pre_pos; % record start location of the token
+                range_pos_2 = next_pos-1;
+            end
+            
+            toks{1}.range = [range_pos_1 range_pos_2]; % index range of this token over the file string
             toks{1}.infile_path = parms.infile_path; % token file name
             
             n_toks = numel(toks);
@@ -576,7 +586,6 @@ function new_macro_definitions = add_macro(macro, macro_definitions)
 
     % check to see if macro already exists; if so, raise an exception
     if macro_exists(macro.name, macro_definitions)
-%         VAPP_error('vapp-error', ['Multiple definitions for macro "', macro.name, '"']);
         VAPP_error('vapp-error',['Multiple definitions for macro "', macro.name, '"']);
     end
 
@@ -944,7 +953,8 @@ function [toks, new_next_pos] = ...
     end
 
     new_next_pos = next_pos;
-
+    parms.start_pos = new_next_pos-1;
+    
     % if the macro is a function like macro, figure out identifier replacements
     % for its arguments by tokenizing each string in arg_strs; otherwise, there 
     % are no arguments, so there will be no identifier replacements while 
@@ -985,7 +995,6 @@ function [toks, new_next_pos] = ...
     [toks, oof_1, oof_2] = ...
             VAPP_tokenize(macro.body, macro_definitions, context_stack, ...
                           new_identifier_replacements, parms, str_utils);
-
 end
 
 function [arg_strs, new_next_pos] = ...

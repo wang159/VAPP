@@ -318,7 +318,7 @@ classdef AstVisitorIrGenerator < AstVisitor
 
             func = thisVisitor.module;
             inputList = inputNode.get_attr('inputs');
-            func.setInputList(inputList);
+            func.setInputList([func.getInputList{:} inputList]);
         end
 
         function out = visitOutput(thisVisitor, outputNode)
@@ -329,7 +329,7 @@ classdef AstVisitorIrGenerator < AstVisitor
 
             func = thisVisitor.module;
             outputList = outputNode.get_attr('outputs');
-            func.setOutputList(outputList);
+            func.setOutputList([func.getOutputList{:} outputList]);
         end
 
         function out = visitAssignment(thisVisitor, assignNode)
